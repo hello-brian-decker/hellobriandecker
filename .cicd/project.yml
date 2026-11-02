@@ -1,0 +1,35 @@
+# CustomAppLab fleet operations manifest — reduced profile (static).
+# Standard: g01-base-infra/docs/fleet-operations.md
+#
+# Astro site that builds to plain files in dist/. No server code, no database,
+# no containers. `project` is the directory name, per the fleet's project-id
+# rule; this checkout is not yet under /opt/apps and has no repo of its own.
+schema: 1
+project: hellobriandecker
+slug: hellobriandecker
+kind: static
+default_branch: main
+
+environments:
+  dev:
+    # `astro dev` — foreground, hot reload, drafts visible.
+    url: http://localhost:4321
+    health_path: /
+    ports: [4321]
+    requires: node npm curl
+    log_dir: /opt/logs/hellobriandecker/dev
+    autostart: none
+  staging:
+    # `astro build` + `astro preview` — drafts excluded, so this is exactly
+    # what prod would serve. :8093 is unclaimed in the fleet port map.
+    url: http://localhost:8093
+    health_path: /
+    ports: [8093]
+    requires: node npm curl
+    log_dir: /opt/logs/hellobriandecker/staging
+    autostart: none
+  prod:
+    # Deployed to GitHub Pages by .github/workflows/deploy.yml, not by ops.sh.
+    # With no workflows declared here, every prod verb exits 3 "not configured" instead of guessing.
+    url: https://hellobriandecker.com
+    health_path: /

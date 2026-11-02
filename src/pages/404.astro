@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import { href } from '../lib/url';
+---
+
+<Base title="Not found">
+  <section class="wrap nf">
+    <pre><code><span>$</span> curl -I {Astro.url.pathname}
+HTTP/2 404</code></pre>
+    <h1>Nothing deployed here.</h1>
+    <p><a href={href('/')}>Back to the homepage →</a></p>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding-block: clamp(4rem, 14vw, 9rem);
+  }
+
+  pre {
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 0;
+    padding: 0.9rem 1.2rem;
+    border-radius: 10px;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    font: 0.9rem/1.7 var(--mono);
+  }
+
+  span {
+    color: var(--code-accent);
+  }
+
+  h1 {
+    margin: 2rem 0 0.5rem;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    letter-spacing: -0.03em;
+  }
+</style>

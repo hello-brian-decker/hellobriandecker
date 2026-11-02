@@ -1,0 +1,165 @@
+---
+// Lumi: the household AI agent. Private (no public URL), so it gets its own section
+// instead of a product card. Public-safe wording only: no hostnames, tailnet names, or ports.
+// Source of truth for every claim: /opt/apps/g28-app-homeagent (README, docs/VISION.md, docs/ROADMAP.md).
+import { Image } from 'astro:assets';
+import lumiLight from '../assets/lumi/lumi-light.png';
+import lumiDark from '../assets/lumi/lumi-dark.png';
+
+const pillars = [
+  {
+    title: 'The brain is plain files',
+    body: 'Personality, what it knows about the family, long-term memory, daily notes, goals, and skills all live as Markdown in a git repo. Models come and go underneath; the brain stays ours.',
+  },
+  {
+    title: 'Home by default, cloud by choice',
+    body: 'A router scores each message: everyday and private requests go to a local model on a home GPU, harder ones go to Claude. The app always labels which one answered.',
+  },
+  {
+    title: 'It does things, not just chat',
+    body: 'Its own command-line tools for calendars, mail, reminders, the family planner, documents, and pictures from a local image model. Missions run plan → act → check → learn on a schedule.',
+  },
+  {
+    title: 'Anything outward waits for a yes',
+    body: 'Sending mail, booking events, or anything hard to undo goes through a proposal I approve. Every task, where it ran, and what it cost shows up in a live control room.',
+  },
+];
+
+const stack = ['Node.js', 'Python', 'Claude', 'Ollama', 'ComfyUI', 'Docker Compose', 'Tailscale'];
+---
+
+<section id="lumi" class="section wrap rule-top lumi">
+  <div class="lumi-head">
+    <div class="portrait">
+      <span class="only-light"><Image src={lumiLight} alt="Lumi, a small character in a brown bear-ear hoodie" widths={[280, 420, 560]} sizes="(min-width: 760px) 280px, 60vw" loading="lazy" /></span>
+      <span class="only-dark"><Image src={lumiDark} alt="" widths={[280, 420, 560]} sizes="(min-width: 760px) 280px, 60vw" loading="lazy" /></span>
+    </div>
+    <div class="intro">
+      <p class="eyebrow">Side project · runs at home · <span class="private">private</span></p>
+      <h2>Meet Lumi, our household AI agent</h2>
+      <p>
+        Lumi is a personal AI agent that belongs to my household, not to a vendor. It runs on my own hardware, chats
+        from our phones, plans the family calendar, writes the morning brief, and remembers what matters, with
+        every action visible and anything risky waiting for my approval.
+      </p>
+      <p class="callout">
+        I'm now extracting it into <strong>homeagent</strong>: the same agent with every name, account, and address
+        turned into a setting, so any household can install it with Docker Compose and own its own agent.
+      </p>
+    </div>
+  </div>
+
+  <ul class="pillars">
+    {
+      pillars.map((p) => (
+        <li>
+          <h3>{p.title}</h3>
+          <p>{p.body}</p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <ul class="stack" aria-label="Stack">
+    {stack.map((tech) => <li>{tech}</li>)}
+  </ul>
+</section>
+
+<style>
+  .lumi-head {
+    display: grid;
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+    align-items: center;
+    gap: 1.5rem clamp(2rem, 5vw, 3.5rem);
+    margin-bottom: 2.5rem;
+  }
+
+  @media (max-width: 760px) {
+    .lumi-head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .portrait {
+      max-width: 240px;
+    }
+  }
+
+  .portrait {
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    background: var(--surface);
+  }
+
+  .portrait img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .private {
+    color: var(--beta);
+  }
+
+  h2 {
+    margin: 0.75rem 0 1rem;
+    font-size: clamp(1.5rem, 3vw, 1.9rem);
+    letter-spacing: -0.02em;
+  }
+
+  .intro p {
+    margin: 0 0 1rem;
+    max-width: 60ch;
+  }
+
+  .callout {
+    padding-left: 1rem;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+  }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+    gap: 1.25rem;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pillars li {
+    padding: 1.25rem 1.35rem;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+  }
+
+  .pillars h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.02rem;
+    letter-spacing: -0.01em;
+  }
+
+  .pillars p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.93rem;
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stack li {
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    font: 0.72rem/1.4 var(--mono);
+    color: var(--muted);
+  }
+</style>

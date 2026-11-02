@@ -1,0 +1,63 @@
+---
+import { site, contactLinks } from '../data/site';
+import { href } from '../lib/url';
+
+interface Props {
+  /** Hero: the first link is the dark primary button. */
+  primaryFirst?: boolean;
+  /** Contact section: offer copy-to-clipboard next to the email link. */
+  copyEmail?: boolean;
+}
+
+const { primaryFirst = false, copyEmail = false } = Astro.props;
+const links = contactLinks(href);
+const email = site.links.email;
+---
+
+{
+  links.length > 0 && (
+    <p class="cta">
+      {links.map((l, i) => (
+        <a class:list={['btn', { primary: primaryFirst && i === 0 }]} href={l.href} rel={l.external ? 'me' : undefined}>
+          {l.label}
+        </a>
+      ))}
+      {copyEmail && email && (
+        <button class="btn copy" type="button" data-copy={email}>
+          <span data-label>Copy {email}</span>
+        </button>
+      )}
+    </p>
+  )
+}
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+    const label = button.querySelector('[data-label]')!;
+    const original = label.textContent;
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy!);
+        label.textContent = 'Copied ✓';
+      } catch {
+        label.textContent = button.dataset.copy!;
+      }
+      setTimeout(() => (label.textContent = original), 2000);
+    });
+  });
+</script>
+
+<style>
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 2rem 0 0;
+  }
+
+  .copy {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+</style>

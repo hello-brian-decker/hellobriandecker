@@ -1,0 +1,260 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import PlatformFlow from '../components/PlatformFlow.astro';
+import LumiTeaser from '../components/LumiTeaser.astro';
+import LumiSection from '../components/LumiSection.astro';
+import ContactButtons from '../components/ContactButtons.astro';
+import { site, contactLinks } from '../data/site';
+import { projects } from '../data/projects';
+import { getPosts, formatDate } from '../data/posts';
+import { href } from '../lib/url';
+
+const posts = (await getPosts()).slice(0, 3);
+const featured = projects.filter((p) => p.featured);
+const rest = projects.filter((p) => !p.featured);
+
+if (contactLinks(href).length === 0 && import.meta.env.PROD) {
+  console.warn('[site] No contact links set in src/data/site.ts; the page has no way to reach you.');
+}
+---
+
+<Base>
+  <section class="hero wrap">
+    <div class="hero-copy">
+      <p class="eyebrow">{site.role} · {site.location}</p>
+      <h1>{site.headline}</h1>
+      <p class="intro">{site.intro}</p>
+      <ContactButtons primaryFirst />
+    </div>
+    <LumiTeaser />
+  </section>
+
+  <section id="work" class="section wrap rule-top">
+    <div class="section-head">
+      <h2>Products</h2>
+      <span class="eyebrow">Click a card to visit the site</span>
+    </div>
+    <div class="featured">
+      {featured.map((project) => <ProjectCard project={project} />)}
+    </div>
+    <div class="grid">
+      {rest.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <LumiSection />
+
+  <section class="section wrap rule-top platform">
+    <div class="platform-head">
+      <div>
+        <p class="eyebrow">Under the hood</p>
+        <h2>One platform, one set of commands</h2>
+      </div>
+      <div class="platform-body">
+        <p>
+          Every project lives in the same layout and runs through the same operations script. Deploy, restart,
+          back up, and health checks work identically everywhere, so nothing needs remembering four months later.
+        </p>
+        <p class="callout">
+          That uniformity is also what makes AI agents useful here: an agent can operate any project without
+          special cases, because the commands and exit codes never change.
+        </p>
+      </div>
+    </div>
+
+    <PlatformFlow />
+
+    <pre><code><span class="prompt">$</span> md5 -q /opt/apps/*/.cicd/ops.sh \
+    | sort | uniq -c
+  <span class="out">24</span> ef59dcab591c2c2468b2729fe61a69ea</code></pre>
+  </section>
+
+  {
+    posts.length > 0 && (
+      <section class="section wrap rule-top">
+        <div class="section-head">
+          <h2>Writing</h2>
+          <a class="eyebrow" href={href('/writing/')}>
+            All posts →
+          </a>
+        </div>
+        <ul class="posts">
+          {posts.map((post) => (
+            <li>
+              <a href={href(`/writing/${post.id}/`)}>
+                <span class="post-title">
+                  {post.data.title}
+                  {post.data.draft && <span class="tag">draft</span>}
+                </span>
+                <span class="post-summary">{post.data.summary}</span>
+              </a>
+              <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section id="contact" class="section wrap rule-top contact">
+    <h2>Let's talk.</h2>
+    <p>
+      I'm interested in DevOps, platform, and infrastructure roles where building the product and running it are
+      the same job.
+    </p>
+    <ContactButtons copyEmail />
+  </section>
+</Base>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 2rem clamp(2rem, 5vw, 4rem);
+    padding-block: clamp(2.5rem, 8vw, 5.5rem) clamp(2.5rem, 6vw, 4rem);
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  h1 {
+    max-width: 16ch;
+    margin: 1rem 0 1.25rem;
+    font-size: clamp(2.4rem, 6.2vw, 4.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+  }
+
+  .intro {
+    max-width: 44ch;
+    margin: 0;
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    color: var(--muted);
+  }
+
+  .featured {
+    margin-bottom: 1.25rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    gap: 1.25rem;
+  }
+
+  .platform-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 1rem 3rem;
+    margin-bottom: 2.5rem;
+  }
+
+  @media (max-width: 760px) {
+    .platform-head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .platform h2 {
+    margin: 0.75rem 0 0;
+    font-size: clamp(1.5rem, 3vw, 1.9rem);
+    letter-spacing: -0.02em;
+  }
+
+  .platform-body p {
+    margin: 0 0 1rem;
+  }
+
+  .callout {
+    padding-left: 1rem;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+  }
+
+  pre {
+    margin: 1.5rem 0 0;
+    padding: 1.1rem 1.25rem;
+    overflow-x: auto;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    border-radius: 12px;
+    font: 0.85rem/1.7 var(--mono);
+  }
+
+  .prompt {
+    color: var(--code-accent);
+  }
+
+  .out {
+    color: var(--code-accent);
+    font-weight: 600;
+  }
+
+  .posts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .posts li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .posts a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-decoration: none;
+  }
+
+  .post-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+
+  .post-title .tag {
+    margin-left: 0.5rem;
+  }
+
+  .posts a:hover .post-title {
+    color: var(--accent);
+  }
+
+  .post-summary {
+    color: var(--muted);
+  }
+
+  .posts time {
+    flex-shrink: 0;
+    font: 0.8rem var(--mono);
+    color: var(--muted);
+  }
+
+  @media (max-width: 560px) {
+    .posts li {
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+  }
+
+  .contact h2 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -0.03em;
+  }
+
+  .contact p {
+    max-width: 52ch;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,237 @@
+/*
+ * Theme: every color token is light-dark(<light>, <dark>). The resolved scheme comes from the OS,
+ * unless the visitor picks one with the header toggle, which sets data-theme on <html>.
+ */
+:root {
+  color-scheme: light dark;
+
+  --bg: light-dark(#f6f4ef, #0f1113);
+  --surface: light-dark(#fffdf8, #16191c);
+  --ink: light-dark(#16181d, #e9e7e2);
+  --muted: light-dark(#5b606b, #9aa0a8);
+  --rule: light-dark(#e2ddd2, #262a2f);
+  --accent: light-dark(#1d7a4c, #5fd49a);
+  --accent-soft: light-dark(#e2f1e8, #15291f);
+  --beta: light-dark(#9a6a12, #e2b04f);
+  --beta-soft: light-dark(#f6ecd6, #2a2213);
+  --down: light-dark(#b42318, #f97066);
+  --down-soft: light-dark(#fdecea, #2d1614);
+  --shadow-color: light-dark(rgb(22 24 29 / 0.08), rgb(0 0 0 / 0.45));
+
+  /* Terminal blocks stay dark in both themes, lifted off the page in dark mode. */
+  --code-bg: light-dark(#16181d, #1b1e22);
+  --code-ink: #d6d9de;
+  --code-muted: #8b919a;
+  --code-accent: #5fd49a;
+  --code-warn: #e2b04f;
+  --code-down: #f97066;
+
+  --sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --measure: 68ch;
+  --page: 1080px;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --header-h: 4rem;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+/* Theme-matched pictures: wrap the light version in .only-light and the dark one in .only-dark.
+ * Follows the OS, unless the header toggle sets data-theme. Lazy images that stay hidden are never fetched. */
+.only-light {
+  display: block;
+}
+
+.only-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .only-light {
+    display: none;
+  }
+  :root:not([data-theme='light']) .only-dark {
+    display: block;
+  }
+}
+
+:root[data-theme='dark'] .only-light {
+  display: none;
+}
+:root[data-theme='dark'] .only-dark {
+  display: block;
+}
+
+:root[data-theme='light'] .only-dark {
+  display: none;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 0.15s, color 0.15s;
+}
+
+a:hover {
+  text-decoration-color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.wrap {
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* A top rule the width of the content, not the padded box, so it lines up with the text. */
+.rule-top {
+  background: linear-gradient(var(--rule), var(--rule)) center top / calc(100% - 2 * var(--gutter)) 1px no-repeat;
+}
+
+.eyebrow {
+  font: 500 0.78rem/1.2 var(--mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.section {
+  padding-block: clamp(3rem, 8vw, 5.5rem);
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  letter-spacing: -0.02em;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.05rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: 0.95rem;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--ink);
+}
+
+.btn.primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font: 500 0.7rem/1.4 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--beta);
+  background: var(--beta-soft);
+  vertical-align: middle;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -3rem;
+  z-index: 100;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--bg);
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

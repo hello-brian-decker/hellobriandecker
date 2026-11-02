@@ -1,0 +1,97 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getPosts, formatDate } from '../../data/posts';
+import { href } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Base title={post.data.title} description={post.data.summary}>
+  <article class="wrap post">
+    <a class="back eyebrow" href={href('/writing/')}>← Writing</a>
+    <h1>{post.data.title}</h1>
+    <p class="meta">
+      <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+      {post.data.draft && <span class="tag">draft, not published</span>}
+    </p>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post {
+    max-width: calc(var(--measure) + 2 * var(--gutter));
+    padding-block: clamp(2.5rem, 7vw, 4.5rem);
+  }
+
+  .back {
+    text-decoration: none;
+  }
+
+  h1 {
+    margin: 1.5rem 0 0.75rem;
+    font-size: clamp(2rem, 5.5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .meta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin: 0 0 2.5rem;
+    font: 0.85rem var(--mono);
+    color: var(--muted);
+  }
+
+
+  .prose {
+    font-size: 1.1rem;
+    line-height: 1.75;
+  }
+
+  .prose :global(h2) {
+    margin: 2.5rem 0 0.75rem;
+    font-size: 1.45rem;
+    letter-spacing: -0.015em;
+  }
+
+  .prose :global(h3) {
+    margin: 2rem 0 0.5rem;
+    font-size: 1.15rem;
+  }
+
+  .prose :global(:not(pre) > code) {
+    padding: 0.1em 0.35em;
+    border-radius: 5px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    font: 0.88em var(--mono);
+  }
+
+  .prose :global(pre) {
+    background: var(--code-bg) !important;
+    color: var(--code-ink);
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--rule);
+    font: 0.88rem/1.65 var(--mono);
+  }
+
+  .prose :global(blockquote) {
+    margin: 1.5rem 0;
+    padding-left: 1.1rem;
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+  }
+</style>

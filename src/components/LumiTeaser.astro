@@ -1,0 +1,99 @@
+---
+// Hero teaser: Lumi's picture as a door to the full #lumi section further down.
+// Eager-loaded: it sits in the first screen on desktop.
+import { Image } from 'astro:assets';
+import lumiLight from '../assets/lumi/lumi-light.png';
+import lumiDark from '../assets/lumi/lumi-dark.png';
+import { href } from '../lib/url';
+
+const sizes = '(min-width: 901px) 360px, 96px';
+const widths = [192, 360, 540, 720];
+---
+
+<a class="teaser" href={href('/#lumi')}>
+  <div class="pic">
+    <span class="only-light"><Image src={lumiLight} alt="" {widths} {sizes} loading="eager" /></span>
+    <span class="only-dark"><Image src={lumiDark} alt="" {widths} {sizes} loading="eager" /></span>
+  </div>
+  <div class="caption">
+    <span class="eyebrow">Now building</span>
+    <strong>Meet Lumi, my household AI agent</strong>
+    <span class="more">Runs at home, on our own hardware <span aria-hidden="true">→</span></span>
+  </div>
+</a>
+
+<style>
+  .teaser {
+    display: block;
+    overflow: hidden;
+    max-width: 380px;
+    margin-left: auto;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 18px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 24px 48px -24px var(--shadow-color);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .teaser:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--rule));
+    transform: translateY(-2px);
+  }
+
+  .teaser:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .pic img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+
+  .caption {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1rem 1.25rem 1.2rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .caption strong {
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+
+  .more {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .teaser:hover .more {
+    color: var(--accent);
+  }
+
+  /* Narrow screens: a compact row under the buttons instead of a big portrait. */
+  @media (max-width: 900px) {
+    .teaser {
+      display: flex;
+      align-items: center;
+      max-width: none;
+      margin-left: 0;
+    }
+
+    .pic {
+      flex: 0 0 96px;
+    }
+
+    .caption {
+      border-top: 0;
+      border-left: 1px solid var(--rule);
+      padding: 0.75rem 1rem;
+    }
+  }
+</style>
